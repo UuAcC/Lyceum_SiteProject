@@ -1,4 +1,6 @@
 from flask import Flask, render_template, make_response, jsonify
+from data import db_session
+
 
 app = Flask(__name__)
 # api = Api(app)
@@ -8,7 +10,7 @@ app.config['SECRET_KEY'] = 'the_freaking_key'
 
 
 def main():
-    # db_session.global_init("db/blogs.db")
+    db_session.global_init("db/music.db")
     # app.register_blueprint(news_api.blueprint)
     app.run(port=8000, host='127.0.0.1')
 
