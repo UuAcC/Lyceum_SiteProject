@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 style="text-align: center;"><span style="font-family: Stencil;">Welcome, User.</span></h2><br>
+<br>
+<style>
+.leftpic {float: left;}
+</style>
+<body style="color: white; background-color: black;" alink="#cc0000" link="#990000" vlink="#ff6600">
+<p style="text-align: left;">
+    <img src="static\test_pic.jpg" class="leftpic" hspace="25">
+    На этом сайте вы можете найти информацию о многих рок- и метал-группах, примеры песен и даже гитарные разборы<br> некоторых из них.<br>
+    Это базовая страница, особо многого тут не увидите.
+</p>
+<br><br><br>
+<p style="text-align: center;">
+    <a class="btn btn-outline-warning" href="file:///groups">Группы</a>
+    <a class="btn btn-outline-warning" href="file:///musicians">Музыканты</a>
+    <a class="btn btn-outline-warning" href="file:///tutorials">Разборы</a>
+</p>
+</body>
+{% endblock %}
