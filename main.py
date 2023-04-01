@@ -1,6 +1,6 @@
 from flask import Flask, render_template, make_response, jsonify
 from data import db_session
-
+from data.groups import Group
 
 app = Flask(__name__)
 # api = Api(app)
@@ -18,6 +18,13 @@ def main():
 @app.route("/")
 def index():
     return render_template("infopage.html")
+
+
+@app.route("/groups")
+def group_list():
+    db_sess = db_session.create_session()
+    bands = [band for band in db_sess.query(Group).all()]
+    return render_template("group_page.html", bands=bands)
 
 
 @app.errorhandler(404)

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 style="text-align: center;"><span style="font-family: Stencil;">Bands list</span></h2><br>
+<br>
+<style>
+.lefttext {margin-left:15%;}
+.righttext {margin-right:15%;}
+</style>
+<body style="text-align: left;"><span style="font-family: Stencil;">
+    {% for item in bands%}
+        <nav class="navbar navbar-dark" style="background-color: #202020;">
+            <h1 style="text-align: center;" class="lefttext"><span style="font-family: Stencil;">{{item.name}}</span></h1>
+            <p style="text-align: right;" class="righttext">
+                <a class="btn btn-outline-danger" href="./group/{{item.id}}">Подробнее</a>
+            </p>
+        </nav>
+    {% endfor %}
+</span>
+</body>
+{% endblock %}
