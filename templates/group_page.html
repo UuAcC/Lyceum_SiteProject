@@ -6,15 +6,16 @@
 <style>
 .lefttext {margin-left:15%;}
 .righttext {margin-right:15%;}
+.both {margin-left:15%; margin-right:15%;}
+.leftbutton {margin-left:45%; font-size:25px;}
 </style>
 <body style="text-align: left;"><span style="font-family: Stencil;">
     {% for item in bands%}
-        <nav class="navbar navbar-dark" style="background-color: #202020;">
-            <h1 style="text-align: center;" class="lefttext"><span style="font-family: Stencil;">{{item.name}}</span></h1>
-            <p style="text-align: right;" class="righttext">
-                <a class="btn btn-outline-danger" href="./group/{{item.id}}">Подробнее</a>
-            </p>
-        </nav>
+        <div class="col-md6 border rounded both">
+            <br>
+            <h1 style="text-align: left;" class="lefttext"><span style="font-family: Stencil;">{{item.name}}</span><a class="btn btn-outline-danger leftbutton" href="./group/{{item.id}}">Подробнее</a></h1>
+            <h5  style="text-align: left;" class="lefttext"><span style="font-family: Stencil;">{{item.genre}}</span></h5>
+        </div>
     {% endfor %}
 </span>
 </body>

@@ -1,10 +1,10 @@
 import sqlalchemy
 from sqlalchemy import orm
 from data.db_session import SqlAlchemyBase
-# from sqlalchemy_serializer import SerializerMixin
+from sqlalchemy_serializer import SerializerMixin
 
 
-class Musician(SqlAlchemyBase):
+class Musician(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'musicians'
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)

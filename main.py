@@ -1,6 +1,8 @@
 from flask import Flask, render_template, make_response, jsonify
 from data import db_session
+from data.albums import Album
 from data.groups import Group
+from data.musicians import Musician
 
 app = Flask(__name__)
 # api = Api(app)
@@ -25,6 +27,15 @@ def group_list():
     db_sess = db_session.create_session()
     bands = [band for band in db_sess.query(Group).all()]
     return render_template("group_page.html", bands=bands)
+
+
+@app.route("/group/<id>")
+def band_page(id):
+    db_sess = db_session.create_session()
+    band = db_sess.query(Group).get(id)
+    albums = [al for al in db_sess.query(Album).filter(Album.group_id == band.id)]
+    musicians = [mus for mus in db_sess.query(Musician).filter(Musician.group_id == band.id)]
+    return render_template("single_band.html", band=band, albums=albums, musicians=musicians)
 
 
 @app.errorhandler(404)
