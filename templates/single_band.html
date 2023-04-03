@@ -15,12 +15,12 @@
     Дата создания: {{band.created_date}}, дата распада: {{band.closed_date}}<br>
     Участники: <ui>
     {% for m in musicians %}
-        {{m.name}} {{m.surname}}
+    <a href="/musician/{{m.id}}">{{m.name}} {{m.surname}}</a>
     {% endfor %}
     </ui><br>
     Альбомы: <ui>
     {% for a in albums %}
-        {{a.name}}
+     <a href="/group/{{band.id}}/album/{{a.id}}">{{a.name}}</a>
     {% endfor %}
     </ui>
 </p>
