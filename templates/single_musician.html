@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 style="text-align: center;"><span style="font-family: Stencil;">{{author.name}} {{author.surname}}</span></h1>
+<style>
+.leftpic {float: left;}
+.both {margin-left:4%; margin-right:4%;}
+</style>
+<br>
+<br>
+<br>
+<body style="color: white; background-color: black;" alink="#cc0000" link="#990000" vlink="#ff6600">
+<p style="text-align: left;">
+    <img src="/static/{{author.id}}_auth.jpg" alt="Пикчи нет, не подкрутили" class="col-md6 border rounded leftpic" hspace="25">
+    Дата рождения: {{author.birth_date}}, дата смерти: {{author.death_date}}<br>
+    Участие в группах: <ui>
+    {% for b in bands %}
+        {{b.name}}
+    {% endfor %}
+    </ui><br>
+</p>
+<p style="text-align: left;" class="both">
+    {{author.short_bio}}
+</p>
+</body>
+{% endblock %}

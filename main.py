@@ -36,6 +36,13 @@ def group_list():
     return render_template("group_page.html", bands=bands)
 
 
+@app.route("/musicians")
+def author_list():
+    db_sess = db_session.create_session()
+    authors = [mus for mus in db_sess.query(Musician).all()]
+    return render_template("musician_page.html", authors=authors, db=db_sess, Group=Group)
+
+
 @app.route("/group/<id>")
 def band_page(id):
     db_sess = db_session.create_session()
@@ -43,6 +50,14 @@ def band_page(id):
     albums = [al for al in db_sess.query(Album).filter(Album.group_id == band.id)]
     musicians = [mus for mus in db_sess.query(Musician).filter(Musician.group_id == band.id)]
     return render_template("single_band.html", band=band, albums=albums, musicians=musicians)
+
+
+@app.route("/musician/<id>")
+def author_page(id):
+    db_sess = db_session.create_session()
+    author = db_sess.query(Musician).get(id)
+    bands = [band for band in db_sess.query(Group).filter(Group.id == author.group_id)]
+    return render_template("single_musician.html", author=author, bands=bands)
 
 
 @app.errorhandler(404)

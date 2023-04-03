@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 style="text-align: center;"><span style="font-family: Stencil;">Musicians list</span></h2><br>
+<br>
+<style>
+.lefttext {margin-left:15%;}
+.righttext {margin-right:15%;}
+.both {margin-left:15%; margin-right:15%;}
+.leftbutton {margin-left:45%; font-size:25px;}
+.try {display:inline}
+</style>
+<body style="text-align: left;"><span style="font-family: Stencil;">
+    {% for item in authors%}
+        <div class="col-md6 border rounded both">
+            <br>
+            <h1 style="text-align: left;" class="lefttext"><span style="font-family: Stencil;">{{item.name}} {{item.surname}}</span><a class="btn btn-outline-danger leftbutton try" href="./musician/{{item.id}}">Подробнее</a></h1>
+            <h5  style="text-align: left;" class="lefttext"><span style="font-family: Stencil;">{{db.query(Group).get(item.group_id).name}}</span></h5>
+        </div>
+        <br>
+    {% endfor %}
+</span>
+</body>
+{% endblock %}
