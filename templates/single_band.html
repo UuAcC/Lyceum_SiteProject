@@ -4,13 +4,14 @@
 <h1 style="text-align: center;"><span style="font-family: Stencil;">{{band.name}}</span></h1>
 <style>
 .leftpic {float: left;}
+.both {margin-left:4%; margin-right:4%;}
 </style>
 <br>
 <br>
 <br>
 <body style="color: white; background-color: black;" alink="#cc0000" link="#990000" vlink="#ff6600">
 <p style="text-align: left;">
-    <img src="/static/{{band.id}}_pic.jpg" alt="Пикчи нет, не подкрутили" class="leftpic" hspace="25">
+    <img src="/static/{{band.id}}_pic.jpg" alt="Пикчи нет, не подкрутили" class="col-md6 border rounded leftpic" hspace="25">
     Дата создания: {{band.created_date}}, дата распада: {{band.closed_date}}<br>
     Участники: <ui>
     {% for m in musicians %}
@@ -23,7 +24,7 @@
     {% endfor %}
     </ui>
 </p>
-<p style="text-align: left;">
+<p style="text-align: left;" class="both">
     {{band.short_bio}}
 </p>
 </body>
