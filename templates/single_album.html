@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 style="text-align: center;"><span style="font-family: Stencil;">{{album.name}}</span></h1>
+<h3 style="text-align: center;"><span style="font-family: Stencil;"><a href="/group/{{band.id}}">{{band.name}}</a></span></h3>
+<style>
+.rightpic {float: left;}
+.both {margin-left:4%; margin-right:4%;}
+audio {height: 25px}
+</style>
+<br>
+<br>
+<br>
+<body style="color: white; background-color: black;" alink="#cc0000" link="#990000" vlink="#ff6600">
+<p style="text-align: left;">
+  <img src="/static/img/{{album.id}}_alb.jpg" alt="Пикчи нет, не подкрутили" class="col-md6 border rounded both rightpic" hspace="25">
+  Дата создания: {{album.created_date}}<br><br>
+  <ui>
+    {% for song in songs %}
+    <span style="font-family: Stencil; font-size: 25px;">{{song.name}}</span>---<audio controls><source src="/static/audio/{{song.name}}.mp3"></audio><br>
+    {% endfor %}
+  </ui>
+</p>
+</body>
+{% endblock %}
