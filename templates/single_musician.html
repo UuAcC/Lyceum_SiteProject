@@ -15,7 +15,7 @@
     Дата рождения: {{author.birth_date}}, дата смерти: {{author.death_date}}<br>
     Участие в группах: <ui>
     {% for b in bands %}
-    <a href="/group/{{b.id}}">{{b.name}}</a>
+    <a href="/group/{{b.id}}">{{b.name}},</a>
     {% endfor %}
     </ui><br>
 </p>

@@ -14,12 +14,13 @@ app.config['SECRET_KEY'] = 'the_freaking_key'
 
 def main():
     db_session.global_init("db/music.db")
-    # db_sess = db_session.create_session()
-    # band = Song()
-    # band.name = str(input())
-    # band.group_id = int(input())
-    # db_sess.add(band)
-    # db_sess.commit()
+    db_sess = db_session.create_session()
+    # while True:
+    #     band = Song()
+    #     band.name = str(input())
+    #     band.album_id = 2
+    #     db_sess.add(band)
+    #     db_sess.commit()
     # app.register_blueprint(news_api.blueprint)
     app.run(port=8000, host='127.0.0.1')
 

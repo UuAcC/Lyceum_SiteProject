@@ -6,7 +6,7 @@
 <style>
 .rightpic {float: left;}
 .both {margin-left:4%; margin-right:4%;}
-audio {height: 25px}
+audio {height: 22px}
 </style>
 <br>
 <br>
@@ -17,7 +17,7 @@ audio {height: 25px}
   Дата создания: {{album.created_date}}<br><br>
   <ui>
     {% for song in songs %}
-    <span style="font-family: Stencil; font-size: 25px;">{{song.name}}</span>---<audio controls><source src="/static/audio/{{song.name}}.mp3"></audio><br>
+    <span style="font-family: Stencil; font-size: 22px;">{{song.name}}</span>---<audio controls><source src="/static/audio/{{song.name}}.mp3"></audio><br>
     {% endfor %}
   </ui>
 </p>
