@@ -79,6 +79,15 @@ def album_page(id, aid):
 # -------------------- конкретные вещи --------------------
 
 
+# -------------------- загрузка фоток --------------------
+#  @app.route("/group/<id>/add_photo", methods=['POST'])
+#  def band_photo(id):
+#      db_sess = db_session.create_session()
+#      band = db_sess.query(Group).get(id)
+#      form = PicAddForm()
+# -------------------- загрузка фоток --------------------
+
+
 # -------------------- регистрация/авторизация --------------------
 @login_manager.user_loader
 def load_user(user_id):
@@ -142,6 +151,11 @@ def not_found(error):
 @app.errorhandler(400)
 def bad_request(_):
     return make_response(jsonify({'error': 'Bad Request'}), 400)
+
+
+@app.errorhandler(500)
+def app_error(error):
+    return make_response(jsonify({'error': 'App error'}), 500)
 # -------------------- ошибки --------------------
 
 
