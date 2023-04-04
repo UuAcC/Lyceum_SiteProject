@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Авторизация</h1>
-    <form action="" method="post">
+    <h1 style="text-align: center;"><span style="font-family: Stencil;">Authorization</span></h1>
+    <form action="" method="post" style="text-align: left; padding-left: 100px; padding-right: 100px;">
         {{ form.hidden_tag() }}
         <p>
             {{ form.email.label }}<br>
@@ -23,7 +23,7 @@
             {% endfor %}
         </p>
         <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
-        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+        <p>{{ form.submit(type="submit", class="btn btn-outline-danger") }}</p>
         <div>{{ message }}</div>
     </form>
 {% endblock %}

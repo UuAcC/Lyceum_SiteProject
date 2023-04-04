@@ -1,13 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-<style>
-    .both {margin-left:15%; margin-right:15%;}
-</style>
-<h1>Регистрация</h1>
-<form action="" method="post">
+<h1 style="text-align: center;"><span style="font-family: Stencil;">Registration</span></h1>
+<form action="" method="post" style="text-align: left; padding-left: 100px; padding-right: 100px;">
     {{ form.hidden_tag() }}
-    <p style="both">
+    <p>
         {{ form.email.label }}<br>
         {{ form.email(class="form-control", type="email") }}<br>
         {% for error in form.email.errors %}
@@ -16,7 +13,7 @@
             </p>
         {% endfor %}
     </p>
-    <p style="both">
+    <p>
         {{ form.password.label }}<br>
         {{ form.password(class="form-control", type="password") }}<br>
         {% for error in form.password.errors %}
@@ -25,7 +22,7 @@
             </p>
         {% endfor %}
     </p>
-    <p style="both">
+    <p>
         {{ form.password_again.label }}<br>
         {{ form.password_again(class="form-control", type="password") }}<br>
         {% for error in form.password_again.errors %}
@@ -34,7 +31,7 @@
             </p>
         {% endfor %}
     </p>
-    <p style="both">
+    <p>
         {{ form.name.label }}<br>
         {{ form.name(class="form-control") }}<br>
         {% for error in form.name.errors %}
@@ -43,7 +40,7 @@
             </p>
         {% endfor %}
     </p>
-    <p style="both">{{ form.submit(type="submit", class="btn btn-outline-danger") }}</p>
+    <p>{{ form.submit(type="submit", class="btn btn-outline-danger") }}</p>
     {{message}}
 </form>
 {% endblock %}
