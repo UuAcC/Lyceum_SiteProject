@@ -15,7 +15,7 @@
         <div class="col-md6 border rounded both">
             <br>
             <h1 style="text-align: left;" class="lefttext"><span style="font-family: Stencil;">{{item.name}} {{item.surname}}</span><a class="btn btn-outline-danger leftbutton try" href="./musician/{{item.id}}">Подробнее</a></h1>
-            <h5  style="text-align: left;" class="lefttext"><span style="font-family: Stencil;">{{db.query(Group).get(item.group_id).name}}</span></h5>
+            <h5  style="text-align: left;" class="lefttext"><span style="font-family: Stencil;">{{item.group.name}}</span></h5>
         </div>
         <br>
     {% endfor %}

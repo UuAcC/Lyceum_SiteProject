@@ -12,3 +12,5 @@ class Album(SqlAlchemyBase, SerializerMixin):
     name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     group_id = sqlalchemy.Column(sqlalchemy.Integer,
                                  sqlalchemy.ForeignKey("groups.id"))
+    songs = orm.relationship("Song", back_populates='album')
+    group = orm.relationship('Group')

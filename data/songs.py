@@ -12,3 +12,4 @@ class Song(SqlAlchemyBase, SerializerMixin):
     album_id = sqlalchemy.Column(sqlalchemy.Integer,
                                  sqlalchemy.ForeignKey("albums.id"))
     tutor = sqlalchemy.Column(sqlalchemy.String, default="None")
+    album = orm.relationship('Album')

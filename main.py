@@ -47,7 +47,7 @@ def group_list():
 def author_list():
     db_sess = db_session.create_session()
     authors = [mus for mus in db_sess.query(Musician).all()]
-    return render_template("musician_page.html", authors=authors, db=db_sess, Group=Group)
+    return render_template("musician_page.html", authors=authors)
 # -------------------- списки --------------------
 
 
@@ -56,8 +56,8 @@ def author_list():
 def band_page(id):
     db_sess = db_session.create_session()
     band = db_sess.query(Group).get(id)
-    albums = [al for al in db_sess.query(Album).filter(Album.group_id == band.id)]
-    musicians = [mus for mus in db_sess.query(Musician).filter(Musician.group_id == band.id)]
+    albums = [al for al in db_sess.query(Album).filter(Album.group == band)]
+    musicians = [mus for mus in db_sess.query(Musician).filter(Musician.group == band)]
     return render_template("single_band.html", band=band, albums=albums, musicians=musicians)
 
 
@@ -65,7 +65,7 @@ def band_page(id):
 def author_page(id):
     db_sess = db_session.create_session()
     author = db_sess.query(Musician).get(id)
-    bands = [band for band in db_sess.query(Group).filter(Group.id == author.group_id)]
+    bands = [band for band in db_sess.query(Group).filter(Group.name == author.group.name)]
     return render_template("single_musician.html", author=author, bands=bands)
 
 
@@ -74,7 +74,7 @@ def album_page(id, aid):
     db_sess = db_session.create_session()
     band = db_sess.query(Group).get(id)
     album = db_sess.query(Album).get(aid)
-    songs = [track for track in db_sess.query(Song).filter(Song.album_id == aid)]
+    songs = [track for track in db_sess.query(Song).filter(Song.album == album)]
     return render_template("single_album.html", album=album, band=band, songs=songs)
 # -------------------- конкретные вещи --------------------
 

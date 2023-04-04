@@ -15,3 +15,4 @@ class Musician(SqlAlchemyBase, SerializerMixin):
     group_id = sqlalchemy.Column(sqlalchemy.Integer,
                                  sqlalchemy.ForeignKey("groups.id"))
     short_bio = sqlalchemy.Column(sqlalchemy.Text, nullable=True)
+    group = orm.relationship("Group")
