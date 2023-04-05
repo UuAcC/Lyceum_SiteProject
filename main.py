@@ -1,5 +1,7 @@
-from flask import Flask, render_template, make_response, jsonify, redirect
-from flask_login import login_user, login_required, logout_user, login_manager, LoginManager
+import os
+
+from flask import Flask, render_template, make_response, jsonify, redirect, request
+from flask_login import login_user, login_required, logout_user, login_manager, LoginManager, current_user
 
 from data import db_session
 from data.albums import Album
@@ -7,12 +9,14 @@ from data.groups import Group
 from data.musicians import Musician
 from data.songs import Song
 from data.users import User
+from forms.add_picture import PicAddForm
 from forms.login import LoginForm
 from forms.register import RegisterForm
 
 app = Flask(__name__)
 # api = Api(app)
 app.config['SECRET_KEY'] = 'the_freaking_key'
+UPLOAD_FOLDER_PIC = '/static/img/'
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -53,11 +57,25 @@ def author_list():
 
 # -------------------- конкретные вещи --------------------
 @app.route("/group/<id>")
-def band_page(id):
+@app.route("/group/<id>/<add_photo>", methods=['GET', 'POST'])
+def band_page(id, add_photo=False):
     db_sess = db_session.create_session()
     band = db_sess.query(Group).get(id)
     albums = [al for al in db_sess.query(Album).filter(Album.group == band)]
     musicians = [mus for mus in db_sess.query(Musician).filter(Musician.group == band)]
+    if add_photo and current_user.is_authenticated:
+        form = PicAddForm()
+        if form.validate_on_submit():
+            file = form.file.data
+            if form.band:
+                filename = f'{band.id}_pic'
+                file.save(os.path.join(app.config['UPLOAD_FOLDER_PIC'], filename))
+                print(2)
+            elif form.album:
+                pass
+            elif form.musician:
+                pass
+        return render_template("single_band_addpic.html", band=band, albums=albums, musicians=musicians, form=form)
     return render_template("single_band.html", band=band, albums=albums, musicians=musicians)
 
 
@@ -77,15 +95,6 @@ def album_page(id, aid):
     songs = [track for track in db_sess.query(Song).filter(Song.album == album)]
     return render_template("single_album.html", album=album, band=band, songs=songs)
 # -------------------- конкретные вещи --------------------
-
-
-# -------------------- загрузка фоток --------------------
-#  @app.route("/group/<id>/add_photo", methods=['POST'])
-#  def band_photo(id):
-#      db_sess = db_session.create_session()
-#      band = db_sess.query(Group).get(id)
-#      form = PicAddForm()
-# -------------------- загрузка фоток --------------------
 
 
 # -------------------- регистрация/авторизация --------------------
