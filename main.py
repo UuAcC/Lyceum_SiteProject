@@ -16,7 +16,6 @@ from forms.register import RegisterForm
 app = Flask(__name__)
 # api = Api(app)
 app.config['SECRET_KEY'] = 'the_freaking_key'
-UPLOAD_FOLDER_PIC = '/static/img/'
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -66,11 +65,10 @@ def band_page(id, add_photo=False):
     if add_photo and current_user.is_authenticated:
         form = PicAddForm()
         if form.validate_on_submit():
-            file = form.file.data
+       #     file = bytes(form.file.data, encoding='utf-8')
             if form.band:
-                filename = f'{band.id}_pic'
-                file.save(os.path.join(app.config['UPLOAD_FOLDER_PIC'], filename))
-                print(2)
+                with open(f'./static/img/{band.id}_pic.jpg', 'wb') as result:
+                    result.write(form.file.data)
             elif form.album:
                 pass
             elif form.musician:

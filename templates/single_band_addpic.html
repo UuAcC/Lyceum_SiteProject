@@ -2,7 +2,7 @@
 
 {% block photo %}
 <h4 style="text-align: right; padding-right:180px;"><span style="font-family: Stencil;">picture</span></h4>
-    <form action="" method="post" style="text-align: right; padding-left: 850px; padding-right: 50px;">
+    <form enctype="multipart/form-data" action="" method="post" style="text-align: right; padding-left: 850px; padding-right: 50px;">
         {{ form.hidden_tag() }}
         <p>
             {{ form.file.label }}<br>
