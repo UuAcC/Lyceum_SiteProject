@@ -22,5 +22,29 @@
 <p style="text-align: left;" class="both">
     {{author.short_bio}}
 </p>
+<br>
+{% if current_user.is_authenticated %}
+<a class="btn btn-outline-danger leftbutton" href="./{{author.id}}/add_photo">Добавить изображение</a> <a class="btn btn-outline-warning leftbutton" href="http://127.0.0.1:8000/musician/{{author.id}}">Отмена</a>
+{% endif %}
+<br>
+<br>
+<br>
+{% if form %}
+<h4 style="text-align: right; padding-right:180px;"><span style="font-family: Stencil;">picture</span></h4>
+    <form enctype="multipart/form-data" action="" method="post" style="text-align: right; padding-left: 850px; padding-right: 50px;">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.file.label }}<br>
+            {{ form.file(class="form-control",  type="file", id="formFile") }}<br>
+            {% for error in form.file.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit(type="submit", class="btn btn-outline-danger") }}</p>
+        <div>{{ message }}</div>
+    </form>
+{% endif %}
 </body>
 {% endblock %}

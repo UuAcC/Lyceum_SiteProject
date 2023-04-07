@@ -2,6 +2,7 @@ import os
 
 from flask import Flask, render_template, make_response, jsonify, redirect, request
 from flask_login import login_user, login_required, logout_user, login_manager, LoginManager, current_user
+from werkzeug.utils import secure_filename
 
 from data import db_session
 from data.albums import Album
@@ -65,32 +66,40 @@ def band_page(id, add_photo=False):
     if add_photo and current_user.is_authenticated:
         form = PicAddForm()
         if form.validate_on_submit():
-       #     file = bytes(form.file.data, encoding='utf-8')
-            if form.band:
-                with open(f'./static/img/{band.id}_pic.jpg', 'wb') as result:
-                    result.write(form.file.data)
-            elif form.album:
-                pass
-            elif form.musician:
-                pass
-        return render_template("single_band_addpic.html", band=band, albums=albums, musicians=musicians, form=form)
+            file = form.file.data
+            file.save(os.path.join(f'./static/img/{band.id}_pic.jpg'))
+        return render_template("single_band.html", band=band, albums=albums, musicians=musicians, form=form)
     return render_template("single_band.html", band=band, albums=albums, musicians=musicians)
 
 
 @app.route("/musician/<id>")
-def author_page(id):
+@app.route("/musician/<id>/<add_photo>", methods=['GET', 'POST'])
+def author_page(id, add_photo=False):
     db_sess = db_session.create_session()
     author = db_sess.query(Musician).get(id)
     bands = [band for band in db_sess.query(Group).filter(Group.name == author.group.name)]
+    if add_photo and current_user.is_authenticated:
+        form = PicAddForm()
+        if form.validate_on_submit():
+            file = form.file.data
+            file.save(os.path.join(f'./static/img/{author.id}_auth.jpg'))
+        return render_template("single_musician.html", author=author, bands=bands, form=form)
     return render_template("single_musician.html", author=author, bands=bands)
 
 
 @app.route("/group/<id>/album/<aid>")
-def album_page(id, aid):
+@app.route("/group/<id>/album/<aid>/<add_photo>", methods=['GET', 'POST'])
+def album_page(id, aid, add_photo=False):
     db_sess = db_session.create_session()
     band = db_sess.query(Group).get(id)
     album = db_sess.query(Album).get(aid)
     songs = [track for track in db_sess.query(Song).filter(Song.album == album)]
+    if add_photo and current_user.is_authenticated:
+        form = PicAddForm()
+        if form.validate_on_submit():
+            file = form.file.data
+            file.save(os.path.join(f'./static/img/{album.id}_alb.jpg'))
+        return render_template("single_album.html", album=album, band=band, songs=songs, form=form)
     return render_template("single_album.html", album=album, band=band, songs=songs)
 # -------------------- конкретные вещи --------------------
 
