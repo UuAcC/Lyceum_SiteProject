@@ -56,8 +56,8 @@ def author_list():
 
 
 # -------------------- конкретные вещи --------------------
-@app.route("/group/<id>")
-@app.route("/group/<id>/<add_photo>", methods=['GET', 'POST'])
+@app.route("/group/<int:id>")
+@app.route("/group/<int:id>/<add_photo>", methods=['GET', 'POST'])
 def band_page(id, add_photo=False):
     db_sess = db_session.create_session()
     band = db_sess.query(Group).get(id)
@@ -72,8 +72,8 @@ def band_page(id, add_photo=False):
     return render_template("single_band.html", band=band, albums=albums, musicians=musicians)
 
 
-@app.route("/musician/<id>")
-@app.route("/musician/<id>/<add_photo>", methods=['GET', 'POST'])
+@app.route("/musician/<int:id>")
+@app.route("/musician/<int:id>/<add_photo>", methods=['GET', 'POST'])
 def author_page(id, add_photo=False):
     db_sess = db_session.create_session()
     author = db_sess.query(Musician).get(id)
@@ -87,8 +87,8 @@ def author_page(id, add_photo=False):
     return render_template("single_musician.html", author=author, bands=bands)
 
 
-@app.route("/group/<id>/album/<aid>")
-@app.route("/group/<id>/album/<aid>/<add_photo>", methods=['GET', 'POST'])
+@app.route("/group/<int:id>/album/<int:aid>")
+@app.route("/group/<int:id>/album/<int:aid>/<add_photo>", methods=['GET', 'POST'])
 def album_page(id, aid, add_photo=False):
     db_sess = db_session.create_session()
     band = db_sess.query(Group).get(id)
