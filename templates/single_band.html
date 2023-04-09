@@ -28,13 +28,13 @@
     {{band.short_bio}}
 </p>
 <br>
-{% if current_user.is_authenticated %}
+{% if current_user.is_authenticated and current_user.is_admin %}
 <a class="btn btn-outline-danger leftbutton" href="./{{band.id}}/add_photo">Добавить изображение</a> <a class="btn btn-outline-warning leftbutton" href="http://127.0.0.1:8000/group/{{band.id}}">Отмена</a>
 {% endif %}
 <br>
 <br>
 <br>
-{% if form %}
+{% if form and current_user.is_admin%}
 <h4 style="text-align: right; padding-right:180px;"><span style="font-family: Stencil;">picture</span></h4>
     <form enctype="multipart/form-data" action="" method="post" style="text-align: right; padding-left: 850px; padding-right: 50px;">
         {{ form.hidden_tag() }}
