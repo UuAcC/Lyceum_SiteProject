@@ -2,8 +2,10 @@ import os
 
 from flask import Flask, render_template, make_response, jsonify, redirect, request
 from flask_login import login_user, login_required, logout_user, login_manager, LoginManager, current_user
+from flask_restful import Api
 from werkzeug.utils import secure_filename
 
+import data.api_data
 from data import db_session
 from data.albums import Album
 from data.groups import Group
@@ -15,7 +17,7 @@ from forms.login import LoginForm
 from forms.register import RegisterForm
 
 app = Flask(__name__)
-# api = Api(app)
+api = Api(app)
 app.config['SECRET_KEY'] = 'the_freaking_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -23,14 +25,12 @@ login_manager.init_app(app)
 
 def main():
     db_session.global_init("db/music.db")
-    # db_sess = db_session.create_session()
-    # while True:
-    #     band = Song()
-    #     band.name = str(input())
-    #     band.album_id = 2
-    #     db_sess.add(band)
-    #     db_sess.commit()
-    # app.register_blueprint(news_api.blueprint)
+    api.add_resource(data.api_data.BandsListResource, '/api/bands')
+    api.add_resource(data.api_data.BandsResource, '/api/bands/<int:bands_id>')
+    api.add_resource(data.api_data.MusiciansListResource, '/api/musicians')
+    api.add_resource(data.api_data.MusiciansResource, '/api/musicians/<int:mus_id>')
+    api.add_resource(data.api_data.UsersListResource, '/api/users')
+    api.add_resource(data.api_data.UsersResource, '/api/users/<int:user_id>')
     app.run(port=8000, host='127.0.0.1')
 
 

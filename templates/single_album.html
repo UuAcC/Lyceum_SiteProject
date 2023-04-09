@@ -23,7 +23,7 @@ audio {height: 22px}
 </p>
 <br>
 {% if current_user.is_authenticated and current_user.is_admin %}
-<a class="btn btn-outline-danger leftbutton" href="./{{album.id}}/add_photo">Добавить изображение</a> <a class="btn btn-outline-warning leftbutton" href="http://127.0.0.1:8000/group/{{band.id}}/album/{{album.id}}">Отмена</a>
+<a class="btn btn-outline-danger leftbutton" href="./{{album.id}}/add_photo">Добавить изображение</a> <a class="btn btn-outline-warning leftbutton" href="/group/{{band.id}}/album/{{album.id}}">Отмена</a>
 {% endif %}
 <br>
 <br>
