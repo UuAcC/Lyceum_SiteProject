@@ -20,7 +20,8 @@ class BandsResource(Resource):
         session = db_session.create_session()
         band = session.query(Group).get(bands_id)
         return jsonify({'band': band.to_dict(
-            only=('name', 'genre', 'created_date', 'albums', 'musicians'))})
+            only=('name', 'genre', 'created_date', '[alb.name for alb in albums]',
+                  '[(mus.name, mus.surname for mus in musicians]'))})
 
     def delete(self, bands_id):
         abort_if_not_found(Group, bands_id)
@@ -36,7 +37,7 @@ class BandsListResource(Resource):
         session = db_session.create_session()
         band = session.query(Group).all()
         return jsonify({'band': [item.to_dict(
-            only=('name', 'genre', 'created_date', 'albums', 'musicians')) for item in band]})
+            only=('name', 'genre', 'created_date', 'list_albums', 'list_musicians')) for item in band]})
 
     def post(self):
         args = band_parser.parse_args()
