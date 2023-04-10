@@ -48,10 +48,17 @@ def group_list():
 
 
 @app.route("/musicians")
-def author_list():
+def tutor_list():
     db_sess = db_session.create_session()
     authors = [mus for mus in db_sess.query(Musician).all()]
     return render_template("musician_page.html", authors=authors)
+
+
+@app.route("/tutorials")
+def author_list():
+    db_sess = db_session.create_session()
+    authors = [song for song in db_sess.query(Song).filter(Song.tutor != 'None')]
+    return render_template("tutorials.html", songs=authors)
 # -------------------- списки --------------------
 
 
