@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 style="text-align: center;"><span style="font-family: Stencil;">Bands list</span></h2><br>
+<br>
+<style>
+@font-face {
+    font-family: Stensil;
+    src: url(/static/fonts/font.ttf);
+   }
+</style>
+<body style="text-align: left;"><span style="font-family: Stencil;">
+    <form enctype="multipart/form-data" action="" method="post" style="text-align: right; padding-left: 850px; padding-right: 50px;">
+        {{ form.hidden_tag() }}
+        <p>
+        {% for song in mus_form.songs %}

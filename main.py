@@ -13,6 +13,7 @@ from data.musicians import Musician
 from data.songs import Song
 from data.users import User
 from forms.add_picture import PicAddForm
+from forms.add_track import MusAddForm
 from forms.login import LoginForm
 from forms.register import RegisterForm
 
@@ -89,7 +90,8 @@ def author_page(id, add_photo=False):
 
 @app.route("/group/<int:id>/album/<int:aid>")
 @app.route("/group/<int:id>/album/<int:aid>/<add_photo>", methods=['GET', 'POST'])
-def album_page(id, aid, add_photo=False):
+@app.route("/group/<int:id>/album/<int:aid>/<add_tracks>", methods=['GET', 'POST'])
+def album_page(id, aid, add_photo=False, add_tracks=False):
     db_sess = db_session.create_session()
     band = db_sess.query(Group).get(id)
     album = db_sess.query(Album).get(aid)
@@ -100,6 +102,20 @@ def album_page(id, aid, add_photo=False):
             file = form.file.data
             file.save(os.path.join(f'./static/img/{album.id}_alb.jpg'))
         return render_template("single_album.html", album=album, band=band, songs=songs, form=form)
+    if add_tracks and current_user.is_authenticated and current_user.is_admin:
+        res = []
+        for song in songs:
+            try:
+                s = open(f'static/audio/{song.name}.mp3')
+                res.append(song)
+            except IOError:
+                pass
+        mus_form = MusAddForm(res)
+        if mus_form.validate_on_submit():
+            files = [(f, mus_form.songs[f].data) for f in mus_form.songs.keys()]
+            for name, file in files:
+                file.save(os.path.join(f'./static/audio/{name}.mp3'))
+        return render_template("add_music.html", mus_form=mus_form)
     return render_template("single_album.html", album=album, band=band, songs=songs)
 # -------------------- конкретные вещи --------------------
 
