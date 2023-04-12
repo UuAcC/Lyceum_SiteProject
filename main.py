@@ -107,14 +107,15 @@ def album_page(id, aid, add_photo=False, add_tracks=False):
         for song in songs:
             try:
                 s = open(f'static/audio/{song.name}.mp3')
-                res.append(song)
             except IOError:
-                pass
+                res.append(song)
         mus_form = MusAddForm(res)
         if mus_form.validate_on_submit():
-            files = [(f, mus_form.songs[f].data) for f in mus_form.songs.keys()]
+            files = [(f.keys(), f.values().data) for f in mus_form.songs]
+            print(6)
             for name, file in files:
                 file.save(os.path.join(f'./static/audio/{name}.mp3'))
+                print(7)
         return render_template("add_music.html", mus_form=mus_form)
     return render_template("single_album.html", album=album, band=band, songs=songs)
 # -------------------- конкретные вещи --------------------

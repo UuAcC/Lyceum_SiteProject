@@ -11,6 +11,24 @@
 </style>
 <body style="text-align: left;"><span style="font-family: Stencil;">
     <form enctype="multipart/form-data" action="" method="post" style="text-align: right; padding-left: 850px; padding-right: 50px;">
-        {{ form.hidden_tag() }}
+        {{ mus_form.hidden_tag() }}
         <p>
-        {% for song in mus_form.songs %}
+            {% for dik in mus_form.songs %}
+            {% for song in dik %}
+            {% set pesnya = dik[song] %}
+            {{ pesnya.label }}<br>
+            {{ pesnya(class="form-control",  type="file", id="formFile") }}<br>
+            {% for error in pesnya.errors %}
+        <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+        {% endfor %}
+        {% endfor %}
+        {% endfor %}
+        </p>
+        <p>{{ mus_form.submit(type="submit", class="btn btn-outline-danger") }}</p>
+        <div>{{ message }}</div>
+    </form>
+</span>
+</body>
+{% endblock %}
