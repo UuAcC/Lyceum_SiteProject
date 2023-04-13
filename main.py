@@ -1,9 +1,8 @@
 import os
 
-from flask import Flask, render_template, make_response, jsonify, redirect, request
-from flask_login import login_user, login_required, logout_user, login_manager, LoginManager, current_user
+from flask import Flask, render_template, make_response, jsonify, redirect
+from flask_login import login_user, login_required, logout_user, LoginManager, current_user
 from flask_restful import Api
-from werkzeug.utils import secure_filename
 
 import data.api_data
 from data import db_session
