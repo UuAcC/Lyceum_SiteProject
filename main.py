@@ -12,6 +12,7 @@ from data.groups import Group
 from data.musicians import Musician
 from data.songs import Song
 from data.users import User
+from forms.add_band import BandAddForm
 from forms.add_picture import PicAddForm
 from forms.login import LoginForm
 from forms.register import RegisterForm
@@ -109,6 +110,27 @@ def album_page(id, aid, add_photo=False):
         return render_template("single_album.html", album=album, band=band, songs=songs, form=form)
     return render_template("single_album.html", album=album, band=band, songs=songs)
 # -------------------- конкретные вещи --------------------
+
+
+# -------------------- функционал админа --------------------
+@app.route('/add_band', methods=['GET', 'POST'])
+def add_band():
+    form = BandAddForm()
+    if form.validate_on_submit():
+        session = db_session.create_session()
+        band = Group(
+            name=form.name.data,
+            genre=form.genre.data,
+            created_date=form.created_date.data,
+            closed_date=form.closed_date.data,
+            short_bio=form.short_bio.data,
+
+        )
+        session.add(band)
+        session.commit()
+        return redirect("/groups")
+    return render_template('add_band.html', form=form)
+# -------------------- функционал админа --------------------
 
 
 # -------------------- регистрация/авторизация --------------------
