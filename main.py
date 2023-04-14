@@ -13,6 +13,7 @@ from data.musicians import Musician
 from data.songs import Song
 from data.users import User
 from forms.add_band import BandAddForm
+from forms.add_musician import MusicianAddForm
 from forms.add_picture import PicAddForm
 from forms.login import LoginForm
 from forms.register import RegisterForm
@@ -130,6 +131,25 @@ def add_band():
         session.commit()
         return redirect("/groups")
     return render_template('add_band.html', form=form)
+
+
+@app.route('/add_musician', methods=['GET', 'POST'])
+def add_musician():
+    form = MusicianAddForm()
+    if form.validate_on_submit():
+        session = db_session.create_session()
+        mus = Musician(
+            name=form.name.data,
+            surname=form.surname.data,
+            birth_date=form.birth_date.data,
+            death_date=form.death_date.data,
+            group_id=form.group_id.data,
+            short_bio=form.short_bio.data,
+        )
+        session.add(mus)
+        session.commit()
+        return redirect("/musicians")
+    return render_template('add_musician.html', form=form)
 # -------------------- функционал админа --------------------
 
 
