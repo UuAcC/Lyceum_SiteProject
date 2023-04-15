@@ -12,6 +12,7 @@ from data.groups import Group
 from data.musicians import Musician
 from data.songs import Song
 from data.users import User
+from forms.add_album import AlbumAddForm
 from forms.add_band import BandAddForm
 from forms.add_musician import MusicianAddForm
 from forms.add_picture import PicAddForm
@@ -67,7 +68,8 @@ def author_list():
 # -------------------- конкретные вещи --------------------
 @app.route("/group/<int:id>")
 @app.route("/group/<int:id>/<add_photo>", methods=['GET', 'POST'])
-def band_page(id, add_photo=False):
+@app.route("/group/<int:id>/<add_album>", methods=['GET', 'POST'])
+def band_page(id, add_photo=False, add_album=False):
     db_sess = db_session.create_session()
     band = db_sess.query(Group).get(id)
     albums = [al for al in db_sess.query(Album).filter(Album.group == band)]
@@ -78,6 +80,18 @@ def band_page(id, add_photo=False):
             file = form.file.data
             file.save(os.path.join(f'./static/img/{band.id}_pic.jpg'))
         return render_template("single_band.html", band=band, albums=albums, musicians=musicians, form=form)
+    elif add_album and current_user.is_authenticated:
+        album_form = AlbumAddForm()
+        if album_form.validate_on_submit():
+            session = db_session.create_session()
+            album = Album(
+                name=album_form.name.data,
+                created_date=album_form.created_date.data,
+                group_id=id,
+            )
+            session.add(album)
+            session.commit()
+        return render_template("single_band.html", band=band, albums=albums, musicians=musicians, album_form=album_form)
     return render_template("single_band.html", band=band, albums=albums, musicians=musicians)
 
 
