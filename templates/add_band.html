@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 style="text-align: center;"><span style="font-family: Stencil;">Add band</span></h2><br>
+<form action="" method="post" style="text-align: left; padding-left: 100px; padding-right: 100px;">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.name.label }}
+        {{ form.name(class="form-control") }}<br>
+        {% for error in form.name.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.genre.label }}
+        {{ form.genre(class="form-control") }}<br>
+        {% for error in form.genre.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.created_date.label }}
+        {{ form.created_date(class="form-control") }}<br>
+        {% for error in form.created_date.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.closed_date.label }}   (оставьте поле пустым, если группа ещё не распалась)
+        {{ form.closed_date(class="form-control") }}<br>
+        {% for error in form.closed_date.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.short_bio.label }}
+        {{ form.short_bio(type="text", class="form-control") }}<br>
+        {% for error in form.short_bio.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>{{ form.submit(type="submit", class="btn btn-outline-warning") }}</p>
+    {{message}}
+</form>
+{% endblock %}
