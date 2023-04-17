@@ -9,3 +9,16 @@
         {% endfor %}
     {% endfor %}
     </p>
+
+
+songs = FieldList(StringField('Название песни:', validators=[DataRequired()]), min_entries=1)
+
+
+album = [al for al in db_sess.query(Album).filter(Album.name == album_form.name.data)]
+            for s in album_form.songs:
+                song = Song(
+                    name=s.data,
+                    album_id=album[0].id,
+                )
+                session.add(song)
+            session.commit()

@@ -16,6 +16,7 @@ from forms.add_band import BandAddForm
 from forms.add_musician import MusicianAddForm
 from forms.add_picture import PicAddForm
 from forms.login import LoginForm
+from forms.num_of_songs import NumForm
 from forms.register import RegisterForm
 
 app = Flask(__name__)
@@ -66,20 +67,19 @@ def author_list():
 
 # -------------------- конкретные вещи --------------------
 @app.route("/group/<int:id>")
-@app.route("/group/<int:id>/<add_photo>", methods=['GET', 'POST'])
-@app.route("/group/<int:id>/<add_album>", methods=['GET', 'POST'])
-def band_page(id, add_photo=False, add_album=False):
+@app.route("/group/<int:id>/<add_smth>", methods=['GET', 'POST'])
+def band_page(id, add_smth=False):
     db_sess = db_session.create_session()
     band = db_sess.query(Group).get(id)
     albums = [al for al in db_sess.query(Album).filter(Album.group == band)]
     musicians = [mus for mus in db_sess.query(Musician).filter(Musician.group == band)]
-    if add_photo and current_user.is_authenticated:
+    if add_smth == 'add_photo' and current_user.is_authenticated:
         form = PicAddForm()
         if form.validate_on_submit():
             file = form.file.data
             file.save(os.path.join(f'./static/img/{band.id}_pic.jpg'))
         return render_template("single_band.html", band=band, albums=albums, musicians=musicians, form=form)
-    elif add_album and current_user.is_authenticated:
+    elif add_smth == 'add_album' and current_user.is_authenticated:
         album_form = AlbumAddForm()
         if album_form.validate_on_submit():
             session = db_session.create_session()
@@ -90,6 +90,7 @@ def band_page(id, add_photo=False, add_album=False):
             )
             session.add(album)
             session.commit()
+            return redirect(f'/group/{id}/album/{album[0].id}')
         return render_template("single_band.html", band=band, albums=albums, musicians=musicians, album_form=album_form)
     return render_template("single_band.html", band=band, albums=albums, musicians=musicians)
 
@@ -110,13 +111,20 @@ def author_page(id, add_photo=False):
 
 
 @app.route("/group/<int:id>/album/<int:aid>")
-@app.route("/group/<int:id>/album/<int:aid>/<add_photo>", methods=['GET', 'POST'])
-def album_page(id, aid, add_photo=False):
+@app.route("/group/<int:id>/album/<int:aid>/<add_smth>", methods=['GET', 'POST'])
+def album_page(id, aid, add_smth=False):
     db_sess = db_session.create_session()
     band = db_sess.query(Group).get(id)
     album = db_sess.query(Album).get(aid)
     songs = [track for track in db_sess.query(Song).filter(Song.album == album)]
-    if add_photo and current_user.is_authenticated:
+    if add_smth == 'num_songs' and current_user.is_authenticated:
+        numform = NumForm()
+        if numform.validate_on_submit():
+            return redirect(f"/group/{id}/album/{aid}/add_songs")
+        return render_template("single_album.html", album=album, band=band, songs=songs, numform=numform)
+    if add_smth == 'add_songs' and current_user.is_authenticated:
+        pass
+    if add_smth == 'add_photo' and current_user.is_authenticated:
         form = PicAddForm()
         if form.validate_on_submit():
             file = form.file.data
