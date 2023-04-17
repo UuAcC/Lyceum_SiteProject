@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 style="text-align: center;"><span style="font-family: Stencil;">Add musician</span></h2><br>
+<form action="" method="post" style="text-align: left; padding-left: 100px; padding-right: 100px;">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.name.label }}
+        {{ form.name(class="form-control") }}<br>
+        {% for error in form.name.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.surname.label }}
+        {{ form.surname(class="form-control") }}<br>
+        {% for error in form.surname.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.birth_date.label }}
+        {{ form.birth_date(class="form-control") }}<br>
+        {% for error in form.birth_date.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.death_date.label }}   (оставьте поле пустым, если музыкант жив(с Цоем было бы спорно))
+        {{ form.death_date(class="form-control") }}<br>
+        {% for error in form.death_date.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+  <p>
+    {{ form.group_id.label }}
+    {% for subfield in form.group_id %}
+    <tr>
+        <td>{{ subfield }}</td>
+        <td>{{ subfield.label }}    </td>
+    </tr>
+    {% endfor %}
+    {% for error in form.group_id.errors %}
+  <p class="alert alert-danger" role="alert">
+  {{ error }}
+</p>
+  {% endfor %}
+  </p>
+    <p>
+        {{ form.short_bio.label }}
+        {{ form.short_bio(type="text", class="form-control") }}<br>
+        {% for error in form.short_bio.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>{{ form.submit(type="submit", class="btn btn-outline-warning") }}</p>
+    {{message}}
+</form>
+{% endblock %}

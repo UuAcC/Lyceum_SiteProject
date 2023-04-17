@@ -12,6 +12,7 @@
 .righttext {margin-right:15%;}
 .both {margin-left:15%; margin-right:15%;}
 .leftbutton {margin-left:45%; font-size:25px;}
+.rightbutton {margin-right:70%; font-size:25px;}
 .try {display:inline}
 </style>
 <body style="text-align: left;"><span style="font-family: Stencil;">
@@ -23,6 +24,9 @@
         </div>
         <br>
     {% endfor %}
+    {% if current_user.is_authenticated and current_user.is_admin %}
+    <a class="btn btn-outline-danger rightbutton" href="./add_musician">Добавить музыканта</a>
+    {% endif %}
 </span>
 </body>
 {% endblock %}

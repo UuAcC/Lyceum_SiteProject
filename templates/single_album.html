@@ -4,10 +4,6 @@
 <h1 style="text-align: center;"><span style="font-family: Stencil;">{{album.name}}</span></h1>
 <h3 style="text-align: center;"><span style="font-family: Stencil;"><a href="/group/{{band.id}}">{{band.name}}</a></span></h3>
 <style>
-@font-face {
-    font-family: Stensil;
-    src: url(/static/fonts/font.ttf);
-   }
 .rightpic {float: left;}
 .both {margin-left:4%; margin-right:4%;}
 audio {height: 22px}
@@ -21,18 +17,35 @@ audio {height: 22px}
   Дата создания: {{album.created_date}}<br><br>
   <ui>
     {% for song in songs %}
-      <span style="font-family: Stencil; font-size: 22px;">{{song.name}}</span>---<audio controls><source src="/static/audio/{{song.name}}.mp3"></audio><br>
+    <span style="font-family: Stencil; font-size: 22px;">{{song.name}}</span>---<audio controls><source src="/static/audio/{{song.name}}.mp3"></audio><br>
     {% endfor %}
   </ui>
 </p>
 <br>
 {% if current_user.is_authenticated and current_user.is_admin %}
-<a class="btn btn-outline-danger leftbutton" href="./{{album.id}}/add_photo">Добавить изображение</a> <a class="btn btn-outline-warning leftbutton" href="/group/{{band.id}}/album/{{album.id}}">Отмена</a>
-<a class="btn btn-outline-danger leftbutton" href="./{{album.id}}/add_tracks">Добавить аудиозаписи</a>
+<a class="btn btn-outline-danger leftbutton" href="./{{album.id}}/add_photo">Добавить изображение</a> <a class="btn btn-outline-danger leftbutton" href="./{{album.id}}/num_songs">Добавить песни/файлы для песен</a> <a class="btn btn-outline-warning leftbutton" href="/group/{{band.id}}/album/{{album.id}}">Отмена</a>
 {% endif %}
 <br>
 <br>
 <br>
+{% if numform and current_user.is_admin %}
+<form enctype="multipart/form-data" action="" method="post" style="text-align: right; padding-left: 850px; padding-right: 50px;">
+    {{ numform.hidden_tag() }}
+    <p>
+        {{ numform.num.label }}<br>
+        {{ numform.num(class="form-control") }}<br>
+        {% for error in numform.num.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>{{ numform.submit(type="submit", class="btn btn-outline-warning") }}</p>
+    {{message}}
+</form>
+{% endif %}
+{% if songsform and current_user.is_admin %}
+{% endif %}
 {% if form and current_user.is_admin %}
 <h4 style="text-align: right; padding-right:180px;"><span style="font-family: Stencil;">picture</span></h4>
     <form enctype="multipart/form-data" action="" method="post" style="text-align: right; padding-left: 850px; padding-right: 50px;">

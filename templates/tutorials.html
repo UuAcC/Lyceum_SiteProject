@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 style="text-align: center;"><span style="font-family: Stencil;">Tutorials</span></h2><br>
+<style>
+    .both {margin-left:15%; margin-right:15%;}
+</style>
+<br>
+<body><span style="font-family: Stencil; both">
+    <p style="text-align: center;">Здесь отображены все песни для которых были найдены разборы на YouTube и ссылки на эти разборы.<br>
+        ВАЖНО: разборы НЕ принадлежат сайту, они - интеллектуальная собственность авторов (если, конечно, они уже не краденые).<br>
+        ! ! ! АДМИН ИХ НЕ ПРИСВАИВАЕТ ! ! !</p>
+    <br><br><br>
+    {% for item in songs %}
+    <div class="col-md6 border rounded both">
+        <h6>{{item.name}}, youtube_link: <a href="{{item.tutor}}">{{item.tutor}}</a></h6>
+    </div>
+    <br>
+    {% endfor %}
+</span>
+</body>
+{% endblock %}

@@ -1,7 +1,7 @@
 import os
 
-from flask import Flask, render_template, make_response, jsonify, redirect, request
-from flask_login import login_user, login_required, logout_user, login_manager, LoginManager, current_user
+from flask import Flask, render_template, make_response, jsonify, redirect
+from flask_login import login_user, login_required, logout_user, LoginManager, current_user
 from flask_restful import Api
 from werkzeug.utils import secure_filename
 
@@ -12,9 +12,12 @@ from data.groups import Group
 from data.musicians import Musician
 from data.songs import Song
 from data.users import User
+from forms.add_album import AlbumAddForm
+from forms.add_band import BandAddForm
+from forms.add_musician import MusicianAddForm
 from forms.add_picture import PicAddForm
-from forms.add_track import MusAddForm
 from forms.login import LoginForm
+from forms.num_of_songs import NumForm
 from forms.register import RegisterForm
 
 app = Flask(__name__)
@@ -49,27 +52,47 @@ def group_list():
 
 
 @app.route("/musicians")
-def author_list():
+def tutor_list():
     db_sess = db_session.create_session()
     authors = [mus for mus in db_sess.query(Musician).all()]
     return render_template("musician_page.html", authors=authors)
+
+
+@app.route("/tutorials")
+def author_list():
+    db_sess = db_session.create_session()
+    authors = [song for song in db_sess.query(Song).filter(Song.tutor != 'None')]
+    return render_template("tutorials.html", songs=authors)
 # -------------------- списки --------------------
 
 
 # -------------------- конкретные вещи --------------------
 @app.route("/group/<int:id>")
-@app.route("/group/<int:id>/<add_photo>", methods=['GET', 'POST'])
-def band_page(id, add_photo=False):
+@app.route("/group/<int:id>/<add_smth>", methods=['GET', 'POST'])
+def band_page(id, add_smth=False):
     db_sess = db_session.create_session()
     band = db_sess.query(Group).get(id)
     albums = [al for al in db_sess.query(Album).filter(Album.group == band)]
     musicians = [mus for mus in db_sess.query(Musician).filter(Musician.group == band)]
-    if add_photo and current_user.is_authenticated:
+    if add_smth == 'add_photo' and current_user.is_authenticated:
         form = PicAddForm()
         if form.validate_on_submit():
             file = form.file.data
             file.save(os.path.join(f'./static/img/{band.id}_pic.jpg'))
         return render_template("single_band.html", band=band, albums=albums, musicians=musicians, form=form)
+    elif add_smth == 'add_album' and current_user.is_authenticated:
+        album_form = AlbumAddForm()
+        if album_form.validate_on_submit():
+            session = db_session.create_session()
+            album = Album(
+                name=album_form.name.data,
+                created_date=album_form.created_date.data,
+                group_id=id,
+            )
+            session.add(album)
+            session.commit()
+            return redirect(f'/group/{id}/album/{album[0].id}')
+        return render_template("single_band.html", band=band, albums=albums, musicians=musicians, album_form=album_form)
     return render_template("single_band.html", band=band, albums=albums, musicians=musicians)
 
 
@@ -89,36 +112,67 @@ def author_page(id, add_photo=False):
 
 
 @app.route("/group/<int:id>/album/<int:aid>")
-@app.route("/group/<int:id>/album/<int:aid>/<add_photo>", methods=['GET', 'POST'])
-@app.route("/group/<int:id>/album/<int:aid>/<add_tracks>", methods=['GET', 'POST'])
-def album_page(id, aid, add_photo=False, add_tracks=False):
+@app.route("/group/<int:id>/album/<int:aid>/<add_smth>", methods=['GET', 'POST'])
+def album_page(id, aid, add_smth=False):
     db_sess = db_session.create_session()
     band = db_sess.query(Group).get(id)
     album = db_sess.query(Album).get(aid)
     songs = [track for track in db_sess.query(Song).filter(Song.album == album)]
-    if add_photo and current_user.is_authenticated:
+    if add_smth == 'num_songs' and current_user.is_authenticated:
+        numform = NumForm()
+        if numform.validate_on_submit():
+            return redirect(f"/group/{id}/album/{aid}/add_songs")
+        return render_template("single_album.html", album=album, band=band, songs=songs, numform=numform)
+    if add_smth == 'add_songs' and current_user.is_authenticated:
+        pass
+    if add_smth == 'add_photo' and current_user.is_authenticated:
         form = PicAddForm()
         if form.validate_on_submit():
             file = form.file.data
             file.save(os.path.join(f'./static/img/{album.id}_alb.jpg'))
         return render_template("single_album.html", album=album, band=band, songs=songs, form=form)
-    if add_tracks and current_user.is_authenticated and current_user.is_admin:
-        res = []
-        for song in songs:
-            try:
-                s = open(f'static/audio/{song.name}.mp3')
-            except IOError:
-                res.append(song)
-        mus_form = MusAddForm(res)
-        if mus_form.validate_on_submit():
-            files = [(f.keys(), f.values().data) for f in mus_form.songs]
-            print(6)
-            for name, file in files:
-                file.save(os.path.join(f'./static/audio/{name}.mp3'))
-                print(7)
-        return render_template("add_music.html", mus_form=mus_form)
     return render_template("single_album.html", album=album, band=band, songs=songs)
 # -------------------- конкретные вещи --------------------
+
+
+# -------------------- функционал админа --------------------
+@app.route('/add_band', methods=['GET', 'POST'])
+def add_band():
+    form = BandAddForm()
+    if form.validate_on_submit():
+        session = db_session.create_session()
+        band = Group(
+            name=form.name.data,
+            genre=form.genre.data,
+            created_date=form.created_date.data,
+            closed_date=form.closed_date.data,
+            short_bio=form.short_bio.data,
+
+        )
+        session.add(band)
+        session.commit()
+        return redirect("/groups")
+    return render_template('add_band.html', form=form)
+
+
+@app.route('/add_musician', methods=['GET', 'POST'])
+def add_musician():
+    form = MusicianAddForm()
+    if form.validate_on_submit():
+        session = db_session.create_session()
+        mus = Musician(
+            name=form.name.data,
+            surname=form.surname.data,
+            birth_date=form.birth_date.data,
+            death_date=form.death_date.data,
+            group_id=form.group_id.data,
+            short_bio=form.short_bio.data,
+        )
+        session.add(mus)
+        session.commit()
+        return redirect("/musicians")
+    return render_template('add_musician.html', form=form)
+# -------------------- функционал админа --------------------
 
 
 # -------------------- регистрация/авторизация --------------------
