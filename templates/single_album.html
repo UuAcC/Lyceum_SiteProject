@@ -44,7 +44,28 @@ audio {height: 22px}
     {{message}}
 </form>
 {% endif %}
-{% if songsform and current_user.is_admin %}
+{% if songs_form and current_user.is_admin %}
+<form enctype="multipart/form-data" action="" method="post" style="text-align: right; padding-left: 700px; padding-right: 50px;">
+    {{ songs_form.hidden_tag() }}
+    <p>
+        {% for song in songs_form.songs %}
+        {{ song.form.name.label }} {{ song.form.name }}<br>
+        {% for error in song.form.name.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    {{ song.form.file.label }} {{ song.form.file }}<br>
+    {% for error in song.form.file.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    {% endfor %}
+    </p>
+    <p>{{ songs_form.submit(type="submit", class="btn btn-outline-danger") }}</p>
+        <div>{{ message }}</div>
+</form>
 {% endif %}
 {% if form and current_user.is_admin %}
 <h4 style="text-align: right; padding-right:180px;"><span style="font-family: Stencil;">picture</span></h4>

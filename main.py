@@ -16,6 +16,7 @@ from forms.add_album import AlbumAddForm
 from forms.add_band import BandAddForm
 from forms.add_musician import MusicianAddForm
 from forms.add_picture import PicAddForm
+from forms.add_tracks import SongsForm
 from forms.login import LoginForm
 from forms.num_of_songs import NumForm
 from forms.register import RegisterForm
@@ -113,7 +114,8 @@ def author_page(id, add_photo=False):
 
 @app.route("/group/<int:id>/album/<int:aid>")
 @app.route("/group/<int:id>/album/<int:aid>/<add_smth>", methods=['GET', 'POST'])
-def album_page(id, aid, add_smth=False):
+@app.route("/group/<int:id>/album/<int:aid>/<add_smth>/<int:count>", methods=['GET', 'POST'])
+def album_page(id, aid, add_smth=False, count=None):
     db_sess = db_session.create_session()
     band = db_sess.query(Group).get(id)
     album = db_sess.query(Album).get(aid)
@@ -121,10 +123,29 @@ def album_page(id, aid, add_smth=False):
     if add_smth == 'num_songs' and current_user.is_authenticated:
         numform = NumForm()
         if numform.validate_on_submit():
-            return redirect(f"/group/{id}/album/{aid}/add_songs")
+            return redirect(f"/group/{id}/album/{aid}/add_songs/{numform.num.data}")
         return render_template("single_album.html", album=album, band=band, songs=songs, numform=numform)
     if add_smth == 'add_songs' and current_user.is_authenticated:
-        pass
+        songs_form = SongsForm()
+        if count >= 1:
+            if songs_form.songs.__len__() == 0:
+                for i in range(count):
+                    songs_form.songs.append_entry()
+            if songs_form.validate_on_submit():
+                for s in songs_form.songs:
+                    try:
+                        file = s.file.data
+                        file.save(os.path.join(f'./static/audio/{s.name.data}.mp3'))
+                    except Exception:
+                        pass
+                    song = Song(
+                        name=s.form.name.data,
+                        album_id=aid,
+                    )
+                    db_sess.add(song)
+                db_sess.commit()
+                return redirect(f"/group/{id}/album/{aid}")
+        return render_template("single_album.html", album=album, band=band, songs=songs, songs_form=songs_form)
     if add_smth == 'add_photo' and current_user.is_authenticated:
         form = PicAddForm()
         if form.validate_on_submit():
