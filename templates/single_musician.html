@@ -1,12 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 style="text-align: center;"><span style="font-family: Stencil;">{{author.name}} {{author.surname}}</span></h1>
+<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+<h1 style="text-align: center;"><span style="font-family: METAL;">{{author.name}} {{author.surname}}</span></h1>
 <style>
-@font-face {
-    font-family: Stensil;
-    src: url(/static/fonts/font.ttf);
-   }
 .leftpic {float: left;}
 .both {margin-left:4%; margin-right:4%;}
 </style>
@@ -14,6 +11,72 @@
 <br>
 <br>
 <body style="color: white; background-color: black;" alink="#cc0000" link="#990000" vlink="#ff6600">
+{% if red_form and current_user.is_admin %}
+<form action="" method="post" style="text-align: left; padding-left: 100px; padding-right: 100px;">
+    {{ red_form.hidden_tag() }}
+    <p>
+        {{ red_form.name.label }}
+        {{ red_form.name(class="form-control") }}<br>
+        {% for error in red_form.name.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ red_form.surname.label }}
+        {{ red_form.surname(class="form-control") }}<br>
+        {% for error in red_form.surname.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ red_form.birth_date.label }}
+        {{ red_form.birth_date(class="form-control") }}<br>
+        {% for error in red_form.birth_date.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ red_form.death_date.label }}
+        {{ red_form.death_date(class="form-control") }}<br>
+        {% for error in red_form.death_date.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+  <p>
+    {{ red_form.group_id.label }}
+    {% for subfield in red_form.group_id %}
+    <tr>
+        <td>{{ subfield }}</td>
+        <td>{{ subfield.label }}    </td>
+    </tr>
+    {% endfor %}
+    {% for error in red_form.group_id.errors %}
+  <p class="alert alert-danger" role="alert">
+  {{ error }}
+</p>
+  {% endfor %}
+  </p>
+    <p>
+        {{ red_form.short_bio.label }}
+        {{ red_form.short_bio(type="text", class="form-control") }}<br>
+        {% for error in red_form.short_bio.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>{{ red_form.submit(type="submit", class="btn btn-outline-warning") }}</p>
+    {{message}}
+</form>
+{% else %}
 <p style="text-align: left;">
     <img src="/static/img/{{author.id}}_auth.jpg" alt="Пикчи нет, не подкрутили" class="col-md6 border rounded leftpic" hspace="25">
     Дата рождения: {{author.birth_date}}, дата смерти: {{author.death_date}}<br>
@@ -28,13 +91,15 @@
 </p>
 <br>
 {% if current_user.is_authenticated and current_user.is_admin %}
-<a class="btn btn-outline-danger leftbutton" href="./{{author.id}}/add_photo">Добавить изображение</a> <a class="btn btn-outline-warning leftbutton" href="/musician/{{author.id}}">Отмена</a>
+<a class="btn btn-outline-danger leftbutton" href="./{{author.id}}/add_photo">Добавить изображение</a>
+<a class="btn btn-outline-warning leftbutton" href="./{{author.id}}/red">Изменить</a>
+<a class="btn btn-outline-warning leftbutton" href="/musician/{{author.id}}">Отмена</a>
 {% endif %}
 <br>
 <br>
 <br>
 {% if form and current_user.is_admin %}
-<h4 style="text-align: right; padding-right:180px;"><span style="font-family: Stencil;">picture</span></h4>
+<h4 style="text-align: right; padding-right:180px;"><span style="font-family: METAL;">picture</span></h4>
     <form enctype="multipart/form-data" action="" method="post" style="text-align: right; padding-left: 850px; padding-right: 50px;">
         {{ form.hidden_tag() }}
         <p>
@@ -49,6 +114,7 @@
         <p>{{ form.submit(type="submit", class="btn btn-outline-danger") }}</p>
         <div>{{ message }}</div>
     </form>
+{% endif %}
 {% endif %}
 </body>
 {% endblock %}

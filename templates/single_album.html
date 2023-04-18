@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 style="text-align: center;"><span style="font-family: Stencil;">{{album.name}}</span></h1>
-<h3 style="text-align: center;"><span style="font-family: Stencil;"><a href="/group/{{band.id}}">{{band.name}}</a></span></h3>
+<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+<h1 style="text-align: center;"><span style="font-family: METAL;">{{album.name}}</span></h1>
+<h3 style="text-align: center;"><span style="font-family: METAL;"><a href="/group/{{band.id}}">{{band.name}}</a></span></h3>
 <style>
 .rightpic {float: left;}
 .both {margin-left:4%; margin-right:4%;}
@@ -12,18 +13,46 @@ audio {height: 22px}
 <br>
 <br>
 <body style="color: white; background-color: black;" alink="#cc0000" link="#990000" vlink="#ff6600">
+{% if red_form and current_user.is_admin %}
+<form enctype="multipart/form-data" action="" method="post" style="text-align: right; padding-left: 300px; padding-right: 300px;">
+        {{ red_form.hidden_tag() }}
+    <p>
+        {{ red_form.name.label }}<br>
+        {{ red_form.name(class="form-control") }}<br>
+        {% for error in red_form.name.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ red_form.created_date.label }}<br>
+        {{ red_form.created_date(class="form-control") }}<br>
+        {% for error in red_form.created_date.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>{{ red_form.submit(type="submit", class="btn btn-outline-warning") }}</p>
+    {{message}}
+</form>
+{% else %}
 <p style="text-align: left;">
   <img src="/static/img/{{album.id}}_alb.jpg" alt="Пикчи нет, не подкрутили" class="col-md6 border rounded both rightpic" hspace="25">
   Дата создания: {{album.created_date}}<br><br>
   <ui>
     {% for song in songs %}
-    <span style="font-family: Stencil; font-size: 22px;">{{song.name}}</span>---<audio controls><source src="/static/audio/{{song.name}}.mp3"></audio><br>
+    <span style="font-family: METAL; font-size: 22px;">{{song.name}}</span>---<audio controls><source src="/static/audio/{{song.name}}.mp3"></audio><br>
     {% endfor %}
   </ui>
 </p>
 <br>
 {% if current_user.is_authenticated and current_user.is_admin %}
-<a class="btn btn-outline-danger leftbutton" href="./{{album.id}}/add_photo">Добавить изображение</a> <a class="btn btn-outline-danger leftbutton" href="./{{album.id}}/num_songs">Добавить песни/файлы для песен</a> <a class="btn btn-outline-warning leftbutton" href="/group/{{band.id}}/album/{{album.id}}">Отмена</a>
+<a class="btn btn-outline-danger leftbutton" href="./{{album.id}}/add_photo">Добавить изображение</a>
+<a class="btn btn-outline-danger leftbutton" href="./{{album.id}}/num_songs">Добавить песни/файлы для песен</a>
+<a class="btn btn-outline-warning leftbutton" href="./{{album.id}}/red">Изменить</a>
+<a class="btn btn-outline-warning leftbutton" href="/group/{{band.id}}/album/{{album.id}}">Отмена</a>
 {% endif %}
 <br>
 <br>
@@ -68,7 +97,7 @@ audio {height: 22px}
 </form>
 {% endif %}
 {% if form and current_user.is_admin %}
-<h4 style="text-align: right; padding-right:180px;"><span style="font-family: Stencil;">picture</span></h4>
+<h4 style="text-align: right; padding-right:180px;"><span style="font-family: METAL;">picture</span></h4>
     <form enctype="multipart/form-data" action="" method="post" style="text-align: right; padding-left: 850px; padding-right: 50px;">
         {{ form.hidden_tag() }}
         <p>
@@ -83,6 +112,7 @@ audio {height: 22px}
         <p>{{ form.submit(type="submit", class="btn btn-outline-danger") }}</p>
         <div>{{ message }}</div>
     </form>
+{% endif %}
 {% endif %}
 </body>
 {% endblock %}

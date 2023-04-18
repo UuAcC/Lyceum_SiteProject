@@ -17,3 +17,14 @@ class MusicianAddForm(FlaskForm):
                           choices=[(band.id, band.name) for band in db_sess.query(Group).all()])
     short_bio = TextAreaField('Краткая биография:', validators=[DataRequired()])
     submit = SubmitField('Подтвердить')
+
+
+class MusicianRedForm(FlaskForm):
+    name = StringField('Имя:')
+    surname = StringField('Фамилия:')
+    birth_date = StringField('Дата рождения:')
+    death_date = StringField('Дата смерти:')
+    group_id = RadioField('Выберите группу, в которой играл музыкант:   ', validators=[DataRequired()],
+                          choices=[(band.id, band.name) for band in db_sess.query(Group).all()])
+    short_bio = TextAreaField('Краткая биография:')
+    submit = SubmitField('Подтвердить')

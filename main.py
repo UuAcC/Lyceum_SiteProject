@@ -3,7 +3,7 @@ import os
 from flask import Flask, render_template, make_response, jsonify, redirect
 from flask_login import login_user, login_required, logout_user, LoginManager, current_user
 from flask_restful import Api
-from werkzeug.utils import secure_filename
+from wtforms import StringField, TextAreaField, SubmitField
 
 import data.api_data
 from data import db_session
@@ -12,9 +12,9 @@ from data.groups import Group
 from data.musicians import Musician
 from data.songs import Song
 from data.users import User
-from forms.add_album import AlbumAddForm
-from forms.add_band import BandAddForm
-from forms.add_musician import MusicianAddForm
+from forms.add_album import AlbumAddForm, AlbumRedForm
+from forms.add_band import BandAddForm, BandRedForm
+from forms.add_musician import MusicianAddForm, MusicianRedForm
 from forms.add_picture import PicAddForm
 from forms.add_tracks import SongsForm
 from forms.login import LoginForm
@@ -94,6 +94,25 @@ def band_page(id, add_smth=False):
             session.commit()
             return redirect(f'/group/{id}/album/{album[0].id}')
         return render_template("single_band.html", band=band, albums=albums, musicians=musicians, album_form=album_form)
+    elif add_smth == 'red' and current_user.is_authenticated:
+        red_form = BandRedForm(
+            name=band.name,
+            genre=band.genre,
+            created_date=band.created_date,
+            closed_date=band.closed_date,
+            short_bio=band.short_bio
+        )
+        if red_form.validate_on_submit():
+            session = db_session.create_session()
+            band_ = session.query(Group).get(id)
+            band_.name = red_form.name.data
+            band_.genre = red_form.genre.data
+            band_.created_date = red_form.created_date.data
+            band_.closed_date = red_form.closed_date.data
+            band_.short_bio = red_form.short_bio.data
+            session.commit()
+            return redirect(f"/group/{id}")
+        return render_template("single_band.html", band=band, albums=albums, musicians=musicians, red_form=red_form)
     return render_template("single_band.html", band=band, albums=albums, musicians=musicians)
 
 
@@ -103,12 +122,33 @@ def author_page(id, add_photo=False):
     db_sess = db_session.create_session()
     author = db_sess.query(Musician).get(id)
     bands = [band for band in db_sess.query(Group).filter(Group.name == author.group.name)]
-    if add_photo and current_user.is_authenticated:
+    if add_photo == "add_photo" and current_user.is_authenticated:
         form = PicAddForm()
         if form.validate_on_submit():
             file = form.file.data
             file.save(os.path.join(f'./static/img/{author.id}_auth.jpg'))
         return render_template("single_musician.html", author=author, bands=bands, form=form)
+    elif add_photo == 'red' and current_user.is_authenticated:
+        red_form = MusicianRedForm(
+            name=author.name,
+            surname=author.surname,
+            birth_date=author.birth_date,
+            death_date=author.death_date,
+            group_id=author.group_id,
+            short_bio=author.short_bio,
+        )
+        if red_form.validate_on_submit():
+            session = db_session.create_session()
+            mus = session.query(Musician).get(id)
+            mus.name = red_form.name.data
+            mus.surname = red_form.surname.data
+            mus.birth_date = red_form.birth_date.data
+            mus.death_date = red_form.death_date.data
+            mus.group_id = red_form.group_id.data
+            mus.short_bio = red_form.short_bio.data
+            session.commit()
+            return redirect(f"/musician/{id}")
+        return render_template("single_musician.html", author=author, bands=bands, red_form=red_form)
     return render_template("single_musician.html", author=author, bands=bands)
 
 
@@ -152,6 +192,19 @@ def album_page(id, aid, add_smth=False, count=None):
             file = form.file.data
             file.save(os.path.join(f'./static/img/{album.id}_alb.jpg'))
         return render_template("single_album.html", album=album, band=band, songs=songs, form=form)
+    elif add_smth == 'red' and current_user.is_authenticated:
+        red_form = AlbumRedForm(
+            name=album.name,
+            created_date=album.created_date
+        )
+        if red_form.validate_on_submit():
+            session = db_session.create_session()
+            alb = session.query(Album).get(aid)
+            alb.name = red_form.name.data
+            alb.created_date = red_form.created_date.data
+            session.commit()
+            return redirect(f"/group/{id}/album/{aid}")
+        return render_template("single_album.html", album=album, band=band, songs=songs, red_form=red_form)
     return render_template("single_album.html", album=album, band=band, songs=songs)
 # -------------------- конкретные вещи --------------------
 
