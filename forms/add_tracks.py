@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired, Optional
 
 class SongForm(FlaskForm):
     name = StringField('Название песни:', validators=[DataRequired()])
-    file = FileField('Аудиозапись (в .mp3):', validators=[Optional()])
+    file = FileField('Аудиозапись (ТОЛЬКО в .mp3):', validators=[Optional()])
 
 
 class SongsForm(FlaskForm):

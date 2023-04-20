@@ -166,30 +166,39 @@ def album_page(id, aid, add_smth=False, count=None):
         return render_template("single_album.html", album=album, band=band, songs=songs, numform=numform)
     if add_smth == 'add_songs' and current_user.is_authenticated:
         songs_form = SongsForm()
-        if count >= 1:
-            if songs_form.songs.__len__() == 0:
-                for i in range(count):
-                    songs_form.songs.append_entry()
-            if songs_form.validate_on_submit():
-                for s in songs_form.songs:
+        if songs_form.songs.__len__() == 0:
+            try:
+                if count >= 1:
+                    for i in range(count):
+                        songs_form.songs.append_entry()
+            except TypeError:
+                current_user.error = 'Введённое значение не является целым числом'
+        else:
+            for s in songs_form.songs:
+                if [si for si in db_sess.query(Song).filter(Song.name == s.form.name.data)]:
+                    pass
+                else:
                     try:
                         file = s.file.data
-                        file.save(os.path.join(f'./static/audio/{s.name.data}.mp3'))
+                        file.save(os.path.join(f'./static/audio/{s.form.name.data}.mp3'))
                     except Exception:
-                        pass
+                        current_user.error = f'Ошибка. Проверьте введённые данные.'
                     song = Song(
                         name=s.form.name.data,
                         album_id=aid,
                     )
                     db_sess.add(song)
                 db_sess.commit()
-                return redirect(f"/group/{id}/album/{aid}")
+            return redirect(f"/group/{id}/album/{aid}")
         return render_template("single_album.html", album=album, band=band, songs=songs, songs_form=songs_form)
     if add_smth == 'add_photo' and current_user.is_authenticated:
         form = PicAddForm()
         if form.validate_on_submit():
-            file = form.file.data
-            file.save(os.path.join(f'./static/img/{album.id}_alb.jpg'))
+            try:
+                file = form.file.data
+                file.save(os.path.join(f'./static/img/{album.id}_alb.jpg'))
+            except Exception:
+                current_user.error = f'Ошибка. Проверьте введённые данные.'
         return render_template("single_album.html", album=album, band=band, songs=songs, form=form)
     elif add_smth == 'red' and current_user.is_authenticated:
         red_form = AlbumRedForm(
