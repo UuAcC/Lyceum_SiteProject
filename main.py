@@ -1,6 +1,7 @@
+import asyncio
 import os
 
-from flask import Flask, render_template, make_response, jsonify, redirect
+from flask import Flask, render_template, make_response, jsonify, redirect, request
 from flask_login import login_user, login_required, logout_user, LoginManager, current_user
 from flask_restful import Api
 
@@ -83,15 +84,20 @@ def band_page(id, add_smth=False):
     elif add_smth == 'add_album' and current_user.is_authenticated:
         album_form = AlbumAddForm()
         if album_form.validate_on_submit():
-            session = db_session.create_session()
-            album = Album(
-                name=album_form.name.data,
-                created_date=album_form.created_date.data,
-                group_id=id,
-            )
-            session.add(album)
-            session.commit()
-            return redirect(f'/group/{id}/album/{album[0].id}')
+            if [al for al in db_sess.query(Album).filter(Album.name == album_form.name.data)]:
+                current_user.error.clear()
+                current_user.error.append('Такой альбом уже есть.')
+                return redirect(f'/group/{id}')
+            else:
+                session = db_session.create_session()
+                album = Album(
+                    name=album_form.name.data,
+                    created_date=album_form.created_date.data,
+                    group_id=id,
+                )
+                session.add(album)
+                session.commit()
+                return redirect(f'/group/{id}/album/{album[0].id}')
         return render_template("single_band.html", band=band, albums=albums, musicians=musicians, album_form=album_form)
     elif add_smth == 'red' and current_user.is_authenticated:
         red_form = BandRedForm(
@@ -172,23 +178,25 @@ def album_page(id, aid, add_smth=False, count=None):
                     for i in range(count):
                         songs_form.songs.append_entry()
             except TypeError:
-                current_user.error = 'Введённое значение не является целым числом'
+                current_user.error.clear()
+                current_user.error.append('Введённое значение не является целым числом')
         else:
             for s in songs_form.songs:
                 if [si for si in db_sess.query(Song).filter(Song.name == s.form.name.data)]:
                     pass
                 else:
-                    try:
-                        file = s.file.data
-                        file.save(os.path.join(f'./static/audio/{s.form.name.data}.mp3'))
-                    except Exception:
-                        current_user.error = f'Ошибка. Проверьте введённые данные.'
                     song = Song(
                         name=s.form.name.data,
                         album_id=aid,
                     )
                     db_sess.add(song)
-                db_sess.commit()
+                    db_sess.commit()
+                try:
+                    file = s.file.data
+                    file.save(os.path.join(f'./static/audio/{s.form.name.data}.mp3'))
+                except Exception:
+                    current_user.error.clear()
+                    current_user.error.append('Ошибка. Проверьте введённые данные.')
             return redirect(f"/group/{id}/album/{aid}")
         return render_template("single_album.html", album=album, band=band, songs=songs, songs_form=songs_form)
     if add_smth == 'add_photo' and current_user.is_authenticated:
@@ -198,7 +206,8 @@ def album_page(id, aid, add_smth=False, count=None):
                 file = form.file.data
                 file.save(os.path.join(f'./static/img/{album.id}_alb.jpg'))
             except Exception:
-                current_user.error = f'Ошибка. Проверьте введённые данные.'
+                current_user.error.clear()
+                current_user.error.append('Ошибка. Проверьте введённые данные.')
         return render_template("single_album.html", album=album, band=band, songs=songs, form=form)
     elif add_smth == 'red' and current_user.is_authenticated:
         red_form = AlbumRedForm(
@@ -220,39 +229,48 @@ def album_page(id, aid, add_smth=False, count=None):
 # -------------------- функционал админа --------------------
 @app.route('/add_band', methods=['GET', 'POST'])
 def add_band():
+    session = db_session.create_session()
     form = BandAddForm()
     if form.validate_on_submit():
-        session = db_session.create_session()
-        band = Group(
-            name=form.name.data,
-            genre=form.genre.data,
-            created_date=form.created_date.data,
-            closed_date=form.closed_date.data,
-            short_bio=form.short_bio.data,
+        if not [band for band in session.query(Group).filter(Group.name == form.name.data)]:
+            band = Group(
+                name=form.name.data,
+                genre=form.genre.data,
+                created_date=form.created_date.data,
+                closed_date=form.closed_date.data,
+                short_bio=form.short_bio.data,
+            )
+            session.add(band)
+            session.commit()
+            return redirect("/groups")
+        else:
+            current_user.error.clear()
+            current_user.error.append('Такая группа уже есть.')
 
-        )
-        session.add(band)
-        session.commit()
-        return redirect("/groups")
     return render_template('add_band.html', form=form)
 
 
 @app.route('/add_musician', methods=['GET', 'POST'])
 def add_musician():
+    session = db_session.create_session()
     form = MusicianAddForm()
     if form.validate_on_submit():
-        session = db_session.create_session()
-        mus = Musician(
-            name=form.name.data,
-            surname=form.surname.data,
-            birth_date=form.birth_date.data,
-            death_date=form.death_date.data,
-            group_id=form.group_id.data,
-            short_bio=form.short_bio.data,
-        )
-        session.add(mus)
-        session.commit()
-        return redirect("/musicians")
+        if not [m for m in session.query(Musician).filter(Musician.name == form.name.data,
+                                                          Musician.surname == form.surname.data)]:
+            mus = Musician(
+                name=form.name.data,
+                surname=form.surname.data,
+                birth_date=form.birth_date.data,
+                death_date=form.death_date.data,
+                group_id=form.group_id.data,
+                short_bio=form.short_bio.data,
+            )
+            session.add(mus)
+            session.commit()
+            return redirect("/musicians")
+        else:
+            current_user.error.clear()
+            current_user.error.append('Такой музыкант уже есть.')
     return render_template('add_musician.html', form=form)
 # -------------------- функционал админа --------------------
 
