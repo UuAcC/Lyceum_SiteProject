@@ -17,8 +17,9 @@
 <div style="text-align: right;">
     <header>
     <nav class="navbar navbar-black bg-black">
-        <h1 style="text-align: center;"><span style="font-family: METAL;">R/M Base    <a class="btn btn-outline-warning" href="/">На главную</a>   <a class="navbar-text" style="color: red; font-size: 15px;">{{ current_user.error[-1] }}</a></span></h1>
+        <h1 style="text-align: center;"><span style="font-family: METAL;">R/M Base    <a class="btn btn-outline-warning" href="/">На главную</a></span></h1>
         {% if current_user.is_authenticated %}
+        <a class="navbar-text" style="color: red; font-size: 15px;">{{ current_user.error[-1] }}</a>
         <a class="navbar-brand" href="/logout" style="color:#ff0000">{{ current_user.name }}</a>
         {% else %}
         <p style="text-align: right;">

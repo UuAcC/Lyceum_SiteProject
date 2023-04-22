@@ -5,8 +5,21 @@
 <h2 style="text-align: center;"><span style="font-family: METAL;">Tutorials</span></h2><br>
 <style>
     .both {margin-left:15%; margin-right:15%;}
+    .rightbutton {margin-right:70%; font-size:25px;}
 </style>
 <br>
+{% if form and current_user.is_admin %}
+<form enctype="multipart/form-data" action="" method="post" style="text-align: right; padding-left: 100px; padding-right: 100px; font-family: METAL;">
+    <p>{{ form.submit(type="submit", class="btn btn-outline-danger") }}</p>
+        <div>{{ message }}</div>
+    {{ form.hidden_tag() }}
+    {% for song in form.songs %}
+    <h4>{{ song.form.name.label }} {{ song.form.name }} --- {{ song.form.url.label }} {{ song.form.url }}</h4><br>
+    {% endfor %}
+    <p>{{ form.submit(type="submit", class="btn btn-outline-danger") }}</p>
+        <div>{{ message }}</div>
+</form>
+{% else %}
 <body><span style="font-family: METAL; both">
     <p style="text-align: center;">Здесь отображены все песни для которых были найдены разборы на YouTube и ссылки на эти разборы.<br>
         ВАЖНО: разборы НЕ принадлежат сайту, они - интеллектуальная собственность авторов (если, конечно, они уже не краденые).<br>
@@ -14,10 +27,12 @@
     <br><br><br>
     {% for item in songs %}
     <div class="col-md6 border rounded both">
-        <h6>{{item.name}}, youtube_link: <a href="{{item.tutor}}">{{item.tutor}}</a></h6>
+        <h5>{{item.name}}, youtube_link: <a href="{{item.tutor}}">{{item.tutor}}</a> </h5>
     </div>
     <br>
     {% endfor %}
+    <a class="btn btn-outline-danger rightbutton" href="/tutorials/add_tutors">Добавить ссылки</a>
 </span>
 </body>
+{% endif %}
 {% endblock %}

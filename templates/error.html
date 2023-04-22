@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+<br><br><br><br><br>
+<h1 style="text-align: center;"><span style="font-family: METAL; color: red; font-size: 200px;">{{ error }}</span></h1>
+<body>
+{% if error == 400 %}
+<h4 style="text-align: center;"><span style="font-family: METAL; color: red; font-size: 40px;">Bad request</span></h4>
+<p style="text-align: center;">
+    Ошибка запроса, отправленного на сервер. Проверьте запрос.
+</p>
+{% elif error == 404 %}
+<h4 style="text-align: center;"><span style="font-family: METAL; color: red; font-size: 40px;">Not found</span></h4>
+<p style="text-align: center;">
+    Искомое не найдено.
+</p>
+{% elif error == 500 %}
+<h4 style="text-align: center;"><span style="font-family: METAL; color: red; font-size: 40px;">Server error</span></h4>
+<p style="text-align: center;">
+    Внутренняя ошибка сервера. Сбой работы, либо невозможно обработать введённые данные.<br>Напишите разработчику о проблеме.
+</p>
+{% endif %}
+</body>
+{% endblock %}

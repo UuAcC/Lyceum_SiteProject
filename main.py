@@ -17,6 +17,7 @@ from forms.add_band import BandAddForm, BandRedForm
 from forms.add_musician import MusicianAddForm, MusicianRedForm
 from forms.add_picture import PicAddForm
 from forms.add_tracks import SongsForm
+from forms.add_tutors import TutorsForm
 from forms.login import LoginForm
 from forms.num_of_songs import NumForm
 from forms.register import RegisterForm
@@ -53,17 +54,35 @@ def group_list():
 
 
 @app.route("/musicians")
-def tutor_list():
+def author_list():
     db_sess = db_session.create_session()
     authors = [mus for mus in db_sess.query(Musician).all()]
     return render_template("musician_page.html", authors=authors)
 
 
 @app.route("/tutorials")
-def author_list():
+@app.route("/tutorials/<add_tutors>", methods=['GET', 'POST'])
+def tutor_list(add_tutors=False):
     db_sess = db_session.create_session()
-    authors = [song for song in db_sess.query(Song).filter(Song.tutor != 'None')]
-    return render_template("tutorials.html", songs=authors)
+    if add_tutors and current_user.is_authenticated:
+        if current_user.is_admin:
+            form = TutorsForm()
+            if form.is_submitted():
+                res = db_sess.query(Song).all()
+                for i in range(len(res)):
+                    res[i].tutor = form.songs.entries[i].form.url.data
+                    db_sess.commit()
+                return redirect('/tutorials')
+            else:
+                sungs = [s for s in db_sess.query(Song).all()]
+                for i in range(len(sungs)):
+                    form.songs.append_entry()
+                    form.songs.entries[i].form.name = sungs[i].name
+                    form.songs.entries[i].form.url.data = sungs[i].tutor
+            return render_template("tutorials.html", form=form)
+    else:
+        authors = [song for song in db_sess.query(Song).filter(Song.tutor != 'None')]
+        return render_template("tutorials.html", songs=authors)
 # -------------------- списки --------------------
 
 
@@ -332,17 +351,26 @@ def logout():
 # -------------------- ошибки --------------------
 @app.errorhandler(404)
 def not_found(error):
-    return make_response(jsonify({'error': 'Not found'}), 404)
+    if 'api' in request.url:
+        return make_response(jsonify({'error': 'Not found'}), 404)
+    else:
+        return render_template('error.html', error=404)
 
 
 @app.errorhandler(400)
 def bad_request(_):
-    return make_response(jsonify({'error': 'Bad Request'}), 400)
+    if 'api' in request.url:
+        return make_response(jsonify({'error': 'Bad Request'}), 400)
+    else:
+        return render_template('error.html', error=400)
 
 
 @app.errorhandler(500)
 def app_error(error):
-    return make_response(jsonify({'error': 'App error'}), 500)
+    if 'api' in request.url:
+        return make_response(jsonify({'error': 'App error'}), 500)
+    else:
+        return render_template('error.html', error=500)
 # -------------------- ошибки --------------------
 
 
