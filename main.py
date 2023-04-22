@@ -1,4 +1,3 @@
-import asyncio
 import os
 
 from flask import Flask, render_template, make_response, jsonify, redirect, request
