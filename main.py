@@ -63,7 +63,7 @@ def author_list():
 @app.route("/tutorials/<add_tutors>", methods=['GET', 'POST'])
 def tutor_list(add_tutors=False):
     db_sess = db_session.create_session()
-    if add_tutors and current_user.is_authenticated:
+    if add_tutors and current_user.is_admin:
         if current_user.is_admin:
             form = TutorsForm()
             if form.is_submitted():

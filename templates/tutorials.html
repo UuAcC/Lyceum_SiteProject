@@ -31,7 +31,9 @@
     </div>
     <br>
     {% endfor %}
+    {% if current_user.is_admin %}
     <a class="btn btn-outline-danger rightbutton" href="/tutorials/add_tutors">Добавить ссылки</a>
+    {% endif %}
 </span>
 </body>
 {% endif %}
