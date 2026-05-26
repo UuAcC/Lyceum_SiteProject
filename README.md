@@ -1,5 +1,14 @@
 # R/M Base – Веб-приложение для базы данных музыкальных групп
 
+![Python](https://img.shields.io/badge/Python-3.7+-blue.svg)
+![Flask](https://img.shields.io/badge/Flask-2.0+-green.svg)
+![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-1.4+-red.svg)
+![SQLite](https://img.shields.io/badge/SQLite-3-blue.svg)
+![Flask-RESTful](https://img.shields.io/badge/Flask--RESTful-0.3.9+-yellow.svg)
+![Flask-Login](https://img.shields.io/badge/Flask--Login-0.6+-orange.svg)
+![WTForms](https://img.shields.io/badge/WTForms-3.0+-purple.svg)
+![Platform](https://img.shields.io/badge/platform-windows-lightgrey.svg)
+
 R/M Base — это веб-приложение на Flask для управления информацией о рок- и метал-группах, музыкантах, альбомах, песнях и гитарных разборах. Приложение предоставляет как удобный веб-интерфейс, так и RESTful API.
 
 ## Возможности
@@ -170,8 +179,16 @@ python tests.py
 
 API-ошибки возвращают JSON с полем `error`.
 
+Авторы
+-------
+### Разработчик
+- [Симонов Максим](https://github.com/UuAcC)
+
+Разработано в качестве учебного проекта в Яндекс.Лицее (курс: Основы промышленного программирования | Д22). 
+
+
 ---
 
-## Контакты
+### Контакты
 
 По вопросам и предложениям обращайтесь к разработчику по email (simmaksimus@gmail.com) или TG/VK (@tea_somelier).
